@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MovieGrid } from "@/components/movie-grid";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -39,34 +39,37 @@ export default function TVShowsPage() {
     const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
     const [sortBy, setSortBy] = useState("popularity.desc");
 
-    const fetchShows = async (pageNum: number, genre?: number | null) => {
-        try {
-            const genreParam = genre ? `&with_genres=${genre}` : "";
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_ENDPOINT}/discover/tv?api_key=${process.env.NEXT_PUBLIC_API_KEY}&page=${pageNum}&sort_by=${sortBy}${genreParam}`
-            );
-            const data = await response.json();
+    const fetchShows = useCallback(
+        async (pageNum: number, genre?: number | null) => {
+            try {
+                const genreParam = genre ? `&with_genres=${genre}` : "";
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/discover/tv?api_key=${process.env.NEXT_PUBLIC_API_KEY}&page=${pageNum}&sort_by=${sortBy}${genreParam}`
+                );
+                const data = await response.json();
 
-            if (pageNum === 1) {
-                setShows(data.results);
-            } else {
-                setShows((prev) => [...prev, ...data.results]);
+                if (pageNum === 1) {
+                    setShows(data.results);
+                } else {
+                    setShows((prev) => [...prev, ...data.results]);
+                }
+
+                setHasMore(data.page < data.total_pages);
+                setPage(pageNum);
+            } catch (error) {
+                console.error("Error fetching TV shows:", error);
+            } finally {
+                setIsLoading(false);
             }
-
-            setHasMore(data.page < data.total_pages);
-            setPage(pageNum);
-        } catch (error) {
-            console.error("Error fetching TV shows:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        },
+        [sortBy]
+    );
 
     useEffect(() => {
         setPage(1);
         setHasMore(true);
         fetchShows(1, selectedGenre);
-    }, [selectedGenre, sortBy]);
+    }, [selectedGenre, sortBy, fetchShows]);
 
     const loadMore = () => {
         if (!isLoading && hasMore) {
