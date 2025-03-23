@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MovieGrid } from "@/components/movie-grid";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -42,34 +42,37 @@ export default function MoviesPage() {
     const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
     const [sortBy, setSortBy] = useState("popularity.desc");
 
-    const fetchMovies = async (pageNum: number, genre?: number | null) => {
-        try {
-            const genreParam = genre ? `&with_genres=${genre}` : "";
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_ENDPOINT}/discover/movie?api_key=${process.env.NEXT_PUBLIC_API_KEY}&page=${pageNum}&sort_by=${sortBy}${genreParam}`
-            );
-            const data = await response.json();
+    const fetchMovies = useCallback(
+        async (pageNum: number, genre?: number | null) => {
+            try {
+                const genreParam = genre ? `&with_genres=${genre}` : "";
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/discover/movie?api_key=${process.env.NEXT_PUBLIC_API_KEY}&page=${pageNum}&sort_by=${sortBy}${genreParam}`
+                );
+                const data = await response.json();
 
-            if (pageNum === 1) {
-                setMovies(data.results);
-            } else {
-                setMovies((prev) => [...prev, ...data.results]);
+                if (pageNum === 1) {
+                    setMovies(data.results);
+                } else {
+                    setMovies((prev) => [...prev, ...data.results]);
+                }
+
+                setHasMore(data.page < data.total_pages);
+                setPage(pageNum);
+            } catch (error) {
+                console.error("Error fetching movies:", error);
+            } finally {
+                setIsLoading(false);
             }
-
-            setHasMore(data.page < data.total_pages);
-            setPage(pageNum);
-        } catch (error) {
-            console.error("Error fetching movies:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        },
+        [sortBy]
+    );
 
     useEffect(() => {
         setPage(1);
         setHasMore(true);
         fetchMovies(1, selectedGenre);
-    }, [selectedGenre, sortBy]);
+    }, [selectedGenre, sortBy, fetchMovies]);
 
     const loadMore = () => {
         if (!isLoading && hasMore) {

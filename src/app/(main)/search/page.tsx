@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,7 +23,7 @@ interface TVShow {
 
 type MediaType = "movie" | "tv";
 
-export default function SearchPage() {
+function SearchResults() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -31,48 +31,48 @@ export default function SearchPage() {
     const [selectedType, setSelectedType] = useState<MediaType>("movie");
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!query) {
-                setIsLoading(false);
-                return;
-            }
+    const fetchData = useCallback(async () => {
+        if (!query) {
+            setIsLoading(false);
+            return;
+        }
 
-            setIsLoading(true);
-            try {
-                const [moviesResponse, tvShowsResponse] = await Promise.all([
-                    fetch(
-                        `${
-                            process.env.NEXT_PUBLIC_API_ENDPOINT
-                        }/search/movie?query=${encodeURIComponent(
-                            query
-                        )}&api_key=${process.env.NEXT_PUBLIC_API_KEY}`
-                    ),
-                    fetch(
-                        `${
-                            process.env.NEXT_PUBLIC_API_ENDPOINT
-                        }/search/tv?query=${encodeURIComponent(
-                            query
-                        )}&api_key=${process.env.NEXT_PUBLIC_API_KEY}`
-                    ),
-                ]);
+        setIsLoading(true);
+        try {
+            const [moviesResponse, tvShowsResponse] = await Promise.all([
+                fetch(
+                    `${
+                        process.env.NEXT_PUBLIC_API_ENDPOINT
+                    }/search/movie?query=${encodeURIComponent(query)}&api_key=${
+                        process.env.NEXT_PUBLIC_API_KEY
+                    }`
+                ),
+                fetch(
+                    `${
+                        process.env.NEXT_PUBLIC_API_ENDPOINT
+                    }/search/tv?query=${encodeURIComponent(query)}&api_key=${
+                        process.env.NEXT_PUBLIC_API_KEY
+                    }`
+                ),
+            ]);
 
-                const [moviesData, tvShowsData] = await Promise.all([
-                    moviesResponse.json(),
-                    tvShowsResponse.json(),
-                ]);
+            const [moviesData, tvShowsData] = await Promise.all([
+                moviesResponse.json(),
+                tvShowsResponse.json(),
+            ]);
 
-                setMovies(moviesData.results);
-                setTVShows(tvShowsData.results);
-            } catch (error) {
-                console.error("Error fetching search results:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
+            setMovies(moviesData.results);
+            setTVShows(tvShowsData.results);
+        } catch (error) {
+            console.error("Error fetching search results:", error);
+        } finally {
+            setIsLoading(false);
+        }
     }, [query]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const filteredMovies = movies.filter((movie) => movie.poster_path);
     const filteredTVShows = tvShows.filter((show) => show.poster_path);
@@ -224,5 +224,28 @@ export default function SearchPage() {
                 )}
             </div>
         </main>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense
+            fallback={
+                <main className="min-h-screen bg-black pt-16">
+                    <div className="container mx-auto px-4 max-w-7xl py-8">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {[...Array(10)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="aspect-[2/3] rounded-lg bg-white/10 animate-pulse"
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </main>
+            }
+        >
+            <SearchResults />
+        </Suspense>
     );
 }
