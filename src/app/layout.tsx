@@ -5,6 +5,8 @@ import { Providers } from "@/components/providers";
 import { AuthProvider } from "@/components/auth-provider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +26,8 @@ export default function RootLayout({
                 <Providers>
                     <AuthProvider>
                         {children}
+                        <Analytics />
+                        <SpeedInsights />
                         <ToastContainer />
                     </AuthProvider>
                 </Providers>
