@@ -1,57 +1,10 @@
 "use client";
-
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-interface Movie {
-    id: number;
-    title?: string;
-    name?: string;
-    overview: string;
-    backdrop_path: string;
-    poster_path: string;
-    vote_average: number;
-    release_date: string;
-    first_air_date: string;
-    media_type: "movie" | "tv";
-}
-
-export function Hero() {
-    const [movie, setMovie] = useState<Movie | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchTrendingMovie = async () => {
-            try {
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/trending/all/day?api_key=${process.env.NEXT_PUBLIC_API_KEY}`
-                );
-                const data = await response.json();
-                // Get a random movie from the first 20 results
-                const randomIndex = Math.floor(Math.random() * 20);
-                setMovie(data.results[randomIndex]);
-            } catch (error) {
-                console.error("Error fetching trending movie:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchTrendingMovie();
-    }, []);
-
-    if (isLoading || !movie) {
-        return (
-            <div className="relative h-[80vh] w-full bg-gray-900 animate-pulse">
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ed1045]"></div>
-                </div>
-            </div>
-        );
-    }
-
+export function Hero({ data }: { data: any }) {
+    console.log(data);
     return (
         <div className="relative h-[80vh] w-full overflow-hidden">
             <motion.div
@@ -61,8 +14,10 @@ export function Hero() {
                 className="absolute inset-0"
             >
                 <Image
-                    src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                    alt={movie.title || movie.name || "Untitled"}
+                    src={`https://image.tmdb.org/t/p/original${data.backdrop_path}`}
+                    alt={`${
+                        data.title || data.name || "Untitled"
+                    } backdrop image`}
                     fill
                     className="object-cover"
                     priority
@@ -99,27 +54,27 @@ export function Hero() {
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.363 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
                                     <span className="text-white text-sm sm:text-lg">
-                                        {typeof movie.vote_average ===
+                                        {typeof data.vote_average ===
                                             "number" &&
-                                        !isNaN(movie.vote_average)
-                                            ? movie.vote_average.toFixed(1)
+                                        !isNaN(data.vote_average)
+                                            ? data.vote_average.toFixed(1)
                                             : "N/A"}
                                     </span>
                                 </div>
                                 <div className="bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/20">
                                     <span className="text-gray-300 text-sm sm:text-lg">
-                                        {movie.release_date
+                                        {data.release_date
                                             ? new Date(
-                                                  movie.release_date
+                                                  data.release_date
                                               ).getFullYear()
                                             : new Date(
-                                                  movie.first_air_date
+                                                  data.first_air_date
                                               ).getFullYear()}
                                     </span>
                                 </div>
                             </motion.div>
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                                {movie.title || movie.name || "Untitled"}
+                                {data.title || data.name || "Untitled"}
                             </h1>
                             <motion.p
                                 initial={{ opacity: 0, y: 20 }}
@@ -127,7 +82,7 @@ export function Hero() {
                                 transition={{ duration: 0.5, delay: 0.6 }}
                                 className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8 line-clamp-2 sm:line-clamp-3"
                             >
-                                {movie.overview}
+                                {data.overview}
                             </motion.p>
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -137,9 +92,9 @@ export function Hero() {
                             >
                                 <Link
                                     href={
-                                        movie.media_type === "movie"
-                                            ? `/watch/movie/${movie.id}`
-                                            : `/watch/tv/${movie.id}/season/1/episode/1`
+                                        data.media_type === "data"
+                                            ? `/watch/data/${data.id}`
+                                            : `/watch/tv/${data.id}/season/1/episode/1`
                                     }
                                     className="group inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#ed1045] text-white rounded-lg hover:bg-[#ff1a5c] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#ed1045]/30 text-sm sm:text-base"
                                 >
@@ -165,7 +120,7 @@ export function Hero() {
                                     <span>Watch Now</span>
                                 </Link>
                                 <Link
-                                    href={`/details/${movie.media_type}/${movie.id}`}
+                                    href={`/details/${data.media_type}/${data.id}`}
                                     className="group inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 border border-white/20 text-sm sm:text-base"
                                 >
                                     <span>View Info</span>
@@ -192,8 +147,10 @@ export function Hero() {
                             className="hidden lg:block w-[200px] sm:w-[250px] h-[280px] sm:h-[360px] relative rounded-lg overflow-hidden shadow-2xl shadow-black/50"
                         >
                             <Image
-                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                alt={movie.title || movie.name || "Untitled"}
+                                src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+                                alt={`${
+                                    data.title || data.name || "Untitled"
+                                } poster image`}
                                 fill
                                 className="object-cover transform hover:scale-105 transition-transform duration-500"
                             />

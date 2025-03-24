@@ -1,16 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MovieGrid } from "@/components/movie-grid";
+import { GridLayout } from "@/components/GridLayout";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-interface TVShow {
-    id: number;
-    name: string;
-    poster_path: string;
-    vote_average: number;
-    first_air_date: string;
-}
+import { TVShow } from "@/types/media";
 
 const genres = [
     { id: 10759, name: "Action & Adventure" },
@@ -129,7 +122,7 @@ export default function TVShowsPage() {
                         </div>
                     }
                 >
-                    <MovieGrid
+                    <GridLayout
                         movies={shows.map((show) => ({
                             id: show.id,
                             title: show.name,

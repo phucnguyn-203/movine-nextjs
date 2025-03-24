@@ -32,7 +32,7 @@ export default function Header() {
             <div className="container mx-auto px-4 max-w-7xl">
                 <div className="flex items-center justify-between h-16">
                     <Link href="/" className="flex items-center gap-2">
-                        <p className="text-3xl font-bold bg-gradient-to-r text-white bg-clip-text text-transparent">
+                        <p className="text-3xl font-bold bg-gradient-to-r text-white bg-clip-text">
                             MOV
                             <span className="text-[#ed1045]">INE</span>
                         </p>
@@ -51,7 +51,7 @@ export default function Header() {
                             Home
                         </Link>
                         <Link
-                            href="/movies"
+                            href="/movies?page=1"
                             className={`text-sm font-medium transition-colors ${
                                 pathname === "/movies"
                                     ? "text-[#ed1045]"

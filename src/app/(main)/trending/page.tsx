@@ -1,24 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MovieGrid } from "@/components/movie-grid";
+import { GridLayout } from "@/components/GridLayout";
 import Link from "next/link";
-
-interface Movie {
-    id: number;
-    title: string;
-    poster_path: string;
-    vote_average: number;
-    release_date: string;
-}
-
-interface TVShow {
-    id: number;
-    name: string;
-    poster_path: string;
-    vote_average: number;
-    first_air_date: string;
-}
+import { Movie, TVShow } from "@/types/media";
 
 type TimeWindow = "day" | "week";
 
@@ -123,7 +108,7 @@ export default function TrendingPage() {
                     {/* Trending Movies Section */}
                     <section>
                         <SectionHeader title="Trending Movies" link="/movies" />
-                        <MovieGrid
+                        <GridLayout
                             movies={trendingMovies}
                             mediaType="movie"
                             isLoading={isLoading}
@@ -136,7 +121,7 @@ export default function TrendingPage() {
                             title="Trending TV Shows"
                             link="/tvshows"
                         />
-                        <MovieGrid
+                        <GridLayout
                             movies={trendingShows.map((show) => ({
                                 id: show.id,
                                 title: show.name,

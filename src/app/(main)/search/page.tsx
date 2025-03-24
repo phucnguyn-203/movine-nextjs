@@ -4,24 +4,7 @@ import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-
-interface Movie {
-    id: number;
-    title: string;
-    poster_path: string;
-    vote_average: number;
-    release_date: string;
-}
-
-interface TVShow {
-    id: number;
-    name: string;
-    poster_path: string;
-    vote_average: number;
-    first_air_date: string;
-}
-
-type MediaType = "movie" | "tv";
+import { Movie, TVShow, MediaType } from "@/types/media";
 
 function SearchResults() {
     const searchParams = useSearchParams();

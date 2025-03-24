@@ -1,8 +1,8 @@
 "use client";
 
-import Header from "@/components/header";
-import { Footer } from "@/components/footer";
-import { ScrollToTop } from "@/components/scroll-to-top";
+import Header from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 export default function MainLayout({
     children,

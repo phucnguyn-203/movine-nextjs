@@ -18,7 +18,7 @@ interface MovieGridProps {
     isLoading: boolean;
 }
 
-export function MovieGrid({ movies, mediaType, isLoading }: MovieGridProps) {
+export function GridLayout({ movies, mediaType, isLoading }: MovieGridProps) {
     if (isLoading) {
         return (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
