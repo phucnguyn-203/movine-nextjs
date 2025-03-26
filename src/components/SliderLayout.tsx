@@ -9,7 +9,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 export function SliderLayout({ data }: { data: any }) {
-    console.log(data);
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
