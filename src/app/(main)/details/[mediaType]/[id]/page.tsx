@@ -3,13 +3,8 @@ import { notFound } from "next/navigation";
 import Detail from "./Detail";
 
 type Props = {
-    params: {
-        mediaType: string;
-        id: string;
-    };
-    searchParams: {
-        [key: string]: string | string[] | undefined;
-    };
+    params: Record<string, string>;
+    searchParams: Record<string, string | string[] | undefined>;
 };
 
 async function getDetails(mediaType: string, id: string) {
