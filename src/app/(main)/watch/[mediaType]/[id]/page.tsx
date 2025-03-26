@@ -1,4 +1,3 @@
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Watch from "./Watch";
 
@@ -20,16 +19,6 @@ interface TVShowDetails {
     }[];
 }
 
-type Props = {
-    params: {
-        mediaType: string;
-        id: string;
-    };
-    searchParams: {
-        [key: string]: string | string[] | undefined;
-    };
-};
-
 async function getDetails(mediaType: string, id: string) {
     try {
         const response = await fetch(
@@ -48,7 +37,7 @@ async function getDetails(mediaType: string, id: string) {
     }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: any) {
     const data = await getDetails(params.mediaType, params.id);
 
     if (!data) {
@@ -73,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-export default async function WatchPage({ params, searchParams }: Props) {
+export default async function WatchPage({ params, searchParams }: any) {
     const { mediaType, id } = params;
     const data = await getDetails(mediaType, id);
 

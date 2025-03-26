@@ -1,14 +1,5 @@
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Detail from "./Detail";
-
-type Props = {
-    params: {
-        mediaType: string;
-        id: string;
-    };
-    searchParams?: Record<string, string | string[] | undefined>;
-};
 
 async function getDetails(mediaType: string, id: string) {
     try {
@@ -42,7 +33,7 @@ async function getDetails(mediaType: string, id: string) {
     }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: any) {
     const data = await getDetails(params.mediaType, params.id);
 
     if (!data) {
@@ -68,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-export default async function DetailsPage({ params }: Props) {
+export default async function DetailsPage({ params }: any) {
     const data = await getDetails(params.mediaType, params.id);
 
     if (!data) {
