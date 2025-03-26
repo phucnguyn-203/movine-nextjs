@@ -2,12 +2,15 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Detail from "./Detail";
 
-interface Props {
+type Props = {
     params: {
         mediaType: string;
         id: string;
     };
-}
+    searchParams: {
+        [key: string]: string | string[] | undefined;
+    };
+};
 
 async function getDetails(mediaType: string, id: string) {
     try {
@@ -42,8 +45,7 @@ async function getDetails(mediaType: string, id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { mediaType, id } = await params;
-    const data = await getDetails(mediaType, id);
+    const data = await getDetails(params.mediaType, params.id);
 
     if (!data) {
         return {
@@ -53,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     const title =
-        mediaType === "movie" ? data.details.title : data.details.name;
+        params.mediaType === "movie" ? data.details.title : data.details.name;
 
     return {
         title: `${title} | Movine`,
@@ -69,14 +71,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function DetailsPage({ params }: Props) {
-    const { mediaType, id } = await params;
-    const data = await getDetails(mediaType, id);
+    const data = await getDetails(params.mediaType, params.id);
 
     if (!data) {
         notFound();
     }
 
     return (
-        <Detail details={data.details} cast={data.cast} mediaType={mediaType} />
+        <Detail
+            details={data.details}
+            cast={data.cast}
+            mediaType={params.mediaType}
+        />
     );
 }
