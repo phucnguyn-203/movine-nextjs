@@ -20,16 +20,15 @@ interface TVShowDetails {
     }[];
 }
 
-interface Props {
+type Props = {
     params: {
         mediaType: string;
         id: string;
     };
     searchParams: {
-        s?: string;
-        e?: string;
+        [key: string]: string | string[] | undefined;
     };
-}
+};
 
 async function getDetails(mediaType: string, id: string) {
     try {
@@ -83,8 +82,8 @@ export default async function WatchPage({ params, searchParams }: Props) {
     }
 
     // Parse season and episode from URL or use defaults
-    const currentSeason = parseInt(searchParams.s || "1");
-    const currentEpisode = parseInt(searchParams.e || "1");
+    const currentSeason = parseInt((searchParams.s as string) || "1");
+    const currentEpisode = parseInt((searchParams.e as string) || "1");
 
     // Validate season and episode numbers for TV shows
     if (mediaType === "tv") {
