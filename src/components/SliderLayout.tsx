@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 export function SliderLayout({ data }: { data: any }) {
+    console.log(data);
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -39,7 +40,9 @@ export function SliderLayout({ data }: { data: any }) {
                     {data.map((item: any) => (
                         <SwiperSlide key={item.id}>
                             <Link
-                                href={`/details/${item.media_type}/${item.id}`}
+                                href={`/details/${
+                                    item.media_type ? item.media_type : "tv"
+                                }/${item.id}`}
                                 className="group block"
                             >
                                 <div className="relative aspect-[2/3] rounded-lg overflow-hidden">

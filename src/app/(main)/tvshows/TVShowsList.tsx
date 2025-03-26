@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { GridLayout } from "@/components/GridLayout";
-import { Movie } from "@/types/media";
-import { fetchMovies } from "@/actions";
+import { TVShow } from "@/types/media";
+import { fetchTVShows } from "@/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface MoviesClientProps {
+interface TVShowsListProps {
     initialData: {
-        results: Movie[];
+        results: TVShow[];
         page: number;
         total_pages: number;
     };
@@ -18,16 +18,16 @@ interface MoviesClientProps {
     initialSortBy: string;
 }
 
-export function MovieList({
+export function TVShowsList({
     initialData,
     genres,
     initialPage,
     initialGenre,
     initialSortBy,
-}: MoviesClientProps) {
+}: TVShowsListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [movies, setMovies] = useState<Movie[]>(initialData.results);
+    const [tvShows, setTVShows] = useState<TVShow[]>(initialData.results);
     const [page, setPage] = useState(initialPage);
     const [totalPages, setTotalPages] = useState(initialData.total_pages);
     const [isLoading, setIsLoading] = useState(false);
@@ -45,19 +45,19 @@ export function MovieList({
             params.delete("genre");
         }
         params.set("sortBy", sort);
-        router.push(`/movies?${params.toString()}`);
+        router.push(`/tvshows?${params.toString()}`);
     };
 
-    const loadMovies = async (pageNum: number, genre?: number | null) => {
+    const loadTVShows = async (pageNum: number, genre?: number | null) => {
         try {
             setIsLoading(true);
-            const data = await fetchMovies(pageNum, genre, sortBy);
-            setMovies(data.results);
+            const data = await fetchTVShows(pageNum, genre, sortBy);
+            setTVShows(data.results);
             setTotalPages(data.total_pages);
             setPage(pageNum);
             updateURL(pageNum, genre || null, sortBy);
         } catch (error) {
-            console.error("Error fetching movies:", error);
+            console.error("Error fetching TV shows:", error);
         } finally {
             setIsLoading(false);
         }
@@ -65,24 +65,24 @@ export function MovieList({
 
     const handleGenreChange = (genre: number | null) => {
         setSelectedGenre(genre);
-        loadMovies(1, genre);
+        loadTVShows(1, genre);
     };
 
     const handleSortChange = (sort: string) => {
         setSortBy(sort);
-        loadMovies(1, selectedGenre);
+        loadTVShows(1, selectedGenre);
     };
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {
-            loadMovies(newPage, selectedGenre);
+            loadTVShows(newPage, selectedGenre);
         }
     };
 
     return (
         <>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-white">Movies</h1>
+                <h1 className="text-3xl font-bold text-white">TV Shows</h1>
                 <div className="flex flex-wrap gap-4">
                     <select
                         value={sortBy}
@@ -91,7 +91,9 @@ export function MovieList({
                     >
                         <option value="popularity.desc">Most Popular</option>
                         <option value="vote_average.desc">Highest Rated</option>
-                        <option value="release_date.desc">Newest First</option>
+                        <option value="first_air_date.desc">
+                            Newest First
+                        </option>
                     </select>
                     <select
                         value={selectedGenre || ""}
@@ -113,8 +115,14 @@ export function MovieList({
             </div>
 
             <GridLayout
-                movies={movies}
-                mediaType="movie"
+                movies={tvShows.map((show) => ({
+                    id: show.id,
+                    title: show.name,
+                    poster_path: show.poster_path,
+                    vote_average: show.vote_average,
+                    release_date: show.first_air_date,
+                }))}
+                mediaType="tv"
                 isLoading={isLoading}
             />
 

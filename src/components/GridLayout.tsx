@@ -34,7 +34,7 @@ export function GridLayout({ movies, mediaType, isLoading }: MovieGridProps) {
 
     return (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {movies.map((movie, index) => (
+            {movies.map((movie: any, index: number) => (
                 <motion.div
                     key={movie.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -70,9 +70,13 @@ export function GridLayout({ movies, mediaType, isLoading }: MovieGridProps) {
                                             {movie.vote_average.toFixed(1)}
                                         </span>
                                         <span className="text-gray-300 text-sm">
-                                            {new Date(
-                                                movie.release_date
-                                            ).getFullYear()}
+                                            {movie.release_date
+                                                ? new Date(
+                                                      movie.release_date
+                                                  ).getFullYear()
+                                                : new Date(
+                                                      movie.first_air_date
+                                                  ).getFullYear()}
                                         </span>
                                     </div>
                                 </div>

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Movie, TVShow, MediaType } from "@/types/media";
+import { searchData } from "@/actions";
 
 function SearchResults() {
     const searchParams = useSearchParams();
@@ -23,29 +24,12 @@ function SearchResults() {
         setIsLoading(true);
         try {
             const [moviesResponse, tvShowsResponse] = await Promise.all([
-                fetch(
-                    `${
-                        process.env.NEXT_PUBLIC_API_ENDPOINT
-                    }/search/movie?query=${encodeURIComponent(query)}&api_key=${
-                        process.env.NEXT_PUBLIC_API_KEY
-                    }`
-                ),
-                fetch(
-                    `${
-                        process.env.NEXT_PUBLIC_API_ENDPOINT
-                    }/search/tv?query=${encodeURIComponent(query)}&api_key=${
-                        process.env.NEXT_PUBLIC_API_KEY
-                    }`
-                ),
+                searchData(query, "movie"),
+                searchData(query, "tv"),
             ]);
 
-            const [moviesData, tvShowsData] = await Promise.all([
-                moviesResponse.json(),
-                tvShowsResponse.json(),
-            ]);
-
-            setMovies(moviesData.results);
-            setTVShows(tvShowsData.results);
+            setMovies(moviesResponse.results);
+            setTVShows(tvShowsResponse.results);
         } catch (error) {
             console.error("Error fetching search results:", error);
         } finally {

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 export function Hero({ data }: { data: any }) {
-    console.log(data);
     return (
-        <div className="relative h-[80vh] w-full overflow-hidden">
+        <div className="relative h-[80vh] lg:h-[100vh] w-full overflow-hidden">
             <motion.div
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
@@ -80,7 +79,7 @@ export function Hero({ data }: { data: any }) {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: 0.6 }}
-                                className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8 line-clamp-2 sm:line-clamp-3"
+                                className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8 line-clamp-3 sm:line-clamp-4"
                             >
                                 {data.overview}
                             </motion.p>

@@ -1,5 +1,5 @@
 import { MovieList } from "./MovieList";
-import { fetchMovies } from "./actions";
+import { fetchMovies } from "@/actions";
 
 const genres = [
     { id: 28, name: "Action" },
