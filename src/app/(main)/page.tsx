@@ -17,9 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
         openGraph: {
             title: heroData.title || heroData.name,
             description: heroData.overview,
-            images: [
-                `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/w500${heroData.poster_path}`,
-            ],
+            images: [`/images/favicon.png`],
         },
     };
 }
