@@ -1,5 +1,35 @@
 import { TrendingList } from "./TrendingList";
 import { fetchTrending } from "@/actions";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: { mediaType?: string; timeWindow?: string };
+}): Promise<Metadata> {
+    const mediaType = searchParams.mediaType || "all";
+    const timeWindow = searchParams.timeWindow || "day";
+    const timeWindowText = timeWindow === "day" ? "Today" : "This Week";
+
+    let title = "";
+    let description = "";
+
+    if (mediaType === "all") {
+        title = `Trending Movies & TV Shows ${timeWindowText} | Movine`;
+        description = `Discover what's trending ${timeWindow.toLowerCase()} in movies and TV shows. Watch the most popular content right now.`;
+    } else if (mediaType === "movie") {
+        title = `Trending Movies ${timeWindowText} | Movine`;
+        description = `Discover what's trending ${timeWindow.toLowerCase()} in movies. Watch the most popular films right now.`;
+    } else if (mediaType === "tv") {
+        title = `Trending TV Shows ${timeWindowText} | Movine`;
+        description = `Discover what's trending ${timeWindow.toLowerCase()} in TV shows. Watch the most popular series right now.`;
+    }
+
+    return {
+        title,
+        description,
+    };
+}
 
 export default async function TrendingPage({
     searchParams,

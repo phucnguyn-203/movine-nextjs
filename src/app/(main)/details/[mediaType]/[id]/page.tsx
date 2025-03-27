@@ -34,7 +34,8 @@ async function getDetails(mediaType: string, id: string) {
 }
 
 export async function generateMetadata({ params }: any) {
-    const data = await getDetails(params.mediaType, params.id);
+    const { mediaType, id } = await params;
+    const data = await getDetails(mediaType, id);
 
     if (!data) {
         return {
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: any) {
     }
 
     const title =
-        params.mediaType === "movie" ? data.details.title : data.details.name;
+        mediaType === "movie" ? data.details.title : data.details.name;
 
     return {
         title: `${title} | Movine`,
@@ -60,17 +61,14 @@ export async function generateMetadata({ params }: any) {
 }
 
 export default async function DetailsPage({ params }: any) {
-    const data = await getDetails(params.mediaType, params.id);
+    const { mediaType, id } = await params;
+    const data = await getDetails(mediaType, id);
 
     if (!data) {
         notFound();
     }
 
     return (
-        <Detail
-            details={data.details}
-            cast={data.cast}
-            mediaType={params.mediaType}
-        />
+        <Detail details={data.details} cast={data.cast} mediaType={mediaType} />
     );
 }

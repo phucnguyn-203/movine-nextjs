@@ -38,7 +38,8 @@ async function getDetails(mediaType: string, id: string) {
 }
 
 export async function generateMetadata({ params }: any) {
-    const data = await getDetails(params.mediaType, params.id);
+    const { mediaType, id } = await params;
+    const data = await getDetails(mediaType, id);
 
     if (!data) {
         return {
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: any) {
         };
     }
 
-    const title = params.mediaType === "movie" ? data.title : data.name;
+    const title = mediaType === "movie" ? data.title : data.name;
 
     return {
         title: `Watch ${title} | Movine`,
@@ -63,7 +64,8 @@ export async function generateMetadata({ params }: any) {
 }
 
 export default async function WatchPage({ params, searchParams }: any) {
-    const { mediaType, id } = params;
+    const { mediaType, id } = await params;
+    const { s, e } = await searchParams;
     const data = await getDetails(mediaType, id);
 
     if (!data) {
@@ -71,8 +73,8 @@ export default async function WatchPage({ params, searchParams }: any) {
     }
 
     // Parse season and episode from URL or use defaults
-    const currentSeason = parseInt((searchParams.s as string) || "1");
-    const currentEpisode = parseInt((searchParams.e as string) || "1");
+    const currentSeason = parseInt((s as string) || "1");
+    const currentEpisode = parseInt((e as string) || "1");
 
     // Validate season and episode numbers for TV shows
     if (mediaType === "tv") {

@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Movie, TVShow, MediaType } from "@/types/media";
 import { searchData } from "@/actions";
+import { Metadata } from "next";
 
 function SearchResults() {
     const searchParams = useSearchParams();
@@ -192,6 +193,27 @@ function SearchResults() {
             </div>
         </main>
     );
+}
+
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: { q?: string };
+}): Promise<Metadata> {
+    const query = searchParams.q || "";
+
+    if (!query) {
+        return {
+            title: "Search Movies & TV Shows | Movine",
+            description:
+                "Search for your favorite movies and TV shows. Find the latest and most popular content.",
+        };
+    }
+
+    return {
+        title: `Search Results for "${query}" | Movine`,
+        description: `Search results for "${query}" in movies and TV shows. Find what you're looking for on Movine.`,
+    };
 }
 
 export default function SearchPage() {

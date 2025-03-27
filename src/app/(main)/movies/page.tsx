@@ -1,5 +1,6 @@
 import { MovieList } from "./MovieList";
 import { fetchMovies } from "@/actions";
+import { Metadata } from "next";
 
 const genres = [
     { id: 28, name: "Action" },
@@ -22,6 +23,20 @@ const genres = [
     { id: 10752, name: "War" },
     { id: 37, name: "Western" },
 ];
+
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: { genre?: string };
+}): Promise<Metadata> {
+    const genre = searchParams.genre ? Number(searchParams.genre) : null;
+    const genreName = genres.find((g) => g.id === genre)?.name || "All";
+
+    return {
+        title: `${genreName} Movies | Movine`,
+        description: `Browse our collection of ${genreName.toLowerCase()} movies. Watch the latest and most popular ${genreName.toLowerCase()} movies online.`,
+    };
+}
 
 export default async function MoviesPage({
     searchParams,

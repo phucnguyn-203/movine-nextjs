@@ -1,5 +1,6 @@
 import { TVShowsList } from "./TVShowsList";
 import { fetchTVShows } from "@/actions";
+import { Metadata } from "next";
 
 const genres = [
     { id: 10759, name: "Action & Adventure" },
@@ -19,6 +20,20 @@ const genres = [
     { id: 10768, name: "War & Politics" },
     { id: 37, name: "Western" },
 ];
+
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: { genre?: string };
+}): Promise<Metadata> {
+    const genre = searchParams.genre ? Number(searchParams.genre) : null;
+    const genreName = genres.find((g) => g.id === genre)?.name || "All";
+
+    return {
+        title: `${genreName} TV Shows | Movine`,
+        description: `Browse our collection of ${genreName.toLowerCase()} TV shows. Watch the latest and most popular ${genreName.toLowerCase()} TV series online.`,
+    };
+}
 
 export default async function TVShowsPage({
     searchParams,
