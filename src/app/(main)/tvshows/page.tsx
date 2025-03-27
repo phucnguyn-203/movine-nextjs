@@ -24,9 +24,10 @@ const genres = [
 export async function generateMetadata({
     searchParams,
 }: {
-    searchParams: { genre?: string };
+    searchParams: Promise<{ genre?: string }>;
 }): Promise<Metadata> {
-    const genre = searchParams.genre ? Number(searchParams.genre) : null;
+    const params = await searchParams;
+    const genre = params.genre ? Number(params.genre) : null;
     const genreName = genres.find((g) => g.id === genre)?.name || "All";
 
     return {

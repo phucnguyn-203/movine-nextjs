@@ -5,10 +5,11 @@ import { Metadata } from "next";
 export async function generateMetadata({
     searchParams,
 }: {
-    searchParams: { mediaType?: string; timeWindow?: string };
+    searchParams: Promise<{ mediaType?: string; timeWindow?: string }>;
 }): Promise<Metadata> {
-    const mediaType = searchParams.mediaType || "all";
-    const timeWindow = searchParams.timeWindow || "day";
+    const params = await searchParams;
+    const mediaType = params.mediaType || "all";
+    const timeWindow = params.timeWindow || "day";
     const timeWindowText = timeWindow === "day" ? "Today" : "This Week";
 
     let title = "";
