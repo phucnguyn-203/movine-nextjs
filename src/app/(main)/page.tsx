@@ -7,6 +7,22 @@ import {
     getTvShowsPopular,
     getMoviesTopRated,
 } from "@/api";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+    const heroData = await getHeroSection();
+    return {
+        title: "Movine - Movie Streaming App",
+        description: "Watch your favorite movies and TV shows",
+        openGraph: {
+            title: heroData.title || heroData.name,
+            description: heroData.overview,
+            images: [
+                `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/w500${heroData.poster_path}`,
+            ],
+        },
+    };
+}
 
 export default async function HomePage() {
     const heroData = await getHeroSection();
